@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="pl">
-<head>
+<head>  
 	<meta charset="utf-8" />
 	<title>Strona aukcyjna</title>
 	<link rel="stylesheet" text type="text/css" href="style.css">
