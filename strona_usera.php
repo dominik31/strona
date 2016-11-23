@@ -12,6 +12,7 @@
 <input type="radio" name="klasyczna" value="klasyczna"/>Aukcja klasyczna 
 <input type="radio" name="min" value="min"/>Aukcja z ceną minimalną
 <input type="radio" name="holenderska" value="holenderska"/>Aukcja holenderska
+<input type="radio" name="moje_aukcje" value="moje_aukcje"/>Moje aukcje
 	<input type="submit" value="szukaj"/>
 </form>
 
@@ -26,7 +27,7 @@ if ((!isset($_SESSION['zalogowany'])))
 
 $nazwa = $_SESSION['user'];
 $email = $_SESSION['email'];
-
+$imie = $nazwa;
 echo $nazwa.'<br>'.$email.'<br><hr>';
 
 
@@ -188,6 +189,14 @@ require_once "connect.php";
 									echo '<hr/>';
 					}
 									
+				}
+				else if(isset($_POST['moje_aukcje']))
+				{
+					$_POST['klasyczna'] = TRUE;
+					$_POST['min'] = TRUE;
+					$_POST['holenderska'] = TRUE;
+					require_once "moje_aukcje.php";
+
 				}
 			}
 				
