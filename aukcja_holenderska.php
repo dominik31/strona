@@ -126,7 +126,7 @@ $user_w = $_SESSION['user'];
 				{
 					
 					
-					if ($polaczenie->query("INSERT INTO holenderska (nazwa,opis,data_r,data_z,cena_w,dolna_granica,spadek,czas_s,obraz,user_w) VALUES ('$np', '$opis', '$data_r', '$data_z', '$cena_w', '$dolna_granica', '$spadek', '$czas_s', '$obraz', '$user_w' )"))
+					if ($polaczenie->query("INSERT INTO holenderska (nazwa,opis,data_r,data_z,cena_w,cena_a,dolna_granica,spadek,czas_s,obraz,user_w) VALUES ('$np', '$opis', '$data_r', '$data_z', '$cena_w','$cena_w', '$dolna_granica', '$spadek', '$czas_s', '$obraz', '$user_w' )"))
 					{
 						echo 'Uda³o siê dodaæ aukcjê z holendersk¹!';
 					}
@@ -173,7 +173,9 @@ PROSZÊ WSTAWIÆ ZDIÊCIE PRZEDMIOTU :
 <input type="file" name="obrazek" required />
 <input type="submit" value="wyœlij" />
 </form>
-
+<hr><hr>
+<form action="nowa_aukcja.php" method="post"><input type="submit" value="WRÓÆ"></form><br>
+<form action="strona_usera.php" method="post"><input type="submit" value="MOJA STRONA"></form>
 </div>
 
 </html>

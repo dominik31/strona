@@ -162,7 +162,9 @@ PROSZĘ WSTAWIĆ ZDIĘCIE PRZEDMIOTU :
 <input type="file" name="obrazek" required />
 <input type="submit" value="wyślij" />
 </form>
-
+<hr><hr>
+<form action="nowa_aukcja.php" method="post"><input type="submit" value="WRÓĆ"></form><br>
+<form action="strona_usera.php" method="post"><input type="submit" value="MOJA STRONA"></form>
 </div>
 
 </html>
