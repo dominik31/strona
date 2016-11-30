@@ -233,7 +233,7 @@
 		
 		<input type="submit" value="Zarejestruj się" />
 		
-	</form>
-
+	</form><hr>
+<form action="index.php" method="post"><input type="submit" value="WRÓĆ"></form>
 </body>
 </html>

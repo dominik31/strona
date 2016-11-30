@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="pl">
-<head>  
+<head>
 	<meta charset="utf-8" />
 	<title>Strona aukcyjna</title>
 	<link rel="stylesheet" text type="text/css" href="style.css">
@@ -8,7 +8,7 @@
 
 <body>
 <?php
-
+//header('refresh: 60;');
 session_start();
 
 	if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
@@ -17,7 +17,7 @@ session_start();
 		exit();
 	}
 
-	
+	require_once "kontrola.php";
 ?>
 <div class='naglowek'>
 	<form action="logowanie.php" method="post">
@@ -44,6 +44,9 @@ session_start();
 <?php
 	if(isset($_SESSION['blad']))	echo $_SESSION['blad'];
 	if(isset($_SESSION['bl'])) echo '<br/>'.$_SESSION['bl'];
+	unset($_SESSION['blad']);
+	unset($_SESSION['bl']);
+	
 ?>
 </div>
 
@@ -70,7 +73,7 @@ require_once "connect.php";
 				if(isset($_POST['klasyczna']))
 				{
 					
-					$licz = $polaczenie->query("SELECT * FROM klasyczna ");
+					$licz = $polaczenie->query("SELECT id FROM klasyczna ORDER BY id DESC  ");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
@@ -96,7 +99,7 @@ require_once "connect.php";
 						$limit++;
 						$i--;
 						
-						
+
 									echo 	'<p>'.'Nazwa : '.$_SESSION['nazwa'].'<br/>';
 									echo 	'Opis: '.$_SESSION['opis'].'<br/>';
 									echo 	'Data rozpoczęcia aukcji: '.$_SESSION['data_r'].'<br/>';
@@ -104,21 +107,24 @@ require_once "connect.php";
 									echo 	'Cena: '.$_SESSION['cena_w'].'<br/>';
 									$obraz = $_SESSION['obraz'];
 									echo 	"<img src= obrazy\'$obraz' />".'<br/>';
-									echo'<form action="licytacja" method="post" >';
+									echo'<form action="licytacja.php" method="post" >';
 									echo 'Numer tej aukcji: '.'<input type="text" name="nr" value="'.$_SESSION['nr'].'" readonly="readonly" size="1"/>'.'<br/>';
 									echo'<input type="submit" value="LICYTUJ"/>';
 									echo'</form>'.'</p>';
 									echo '<hr/>';
+						
+
 					}
 					
 				}
 				else if(isset($_POST['min']))
 				{
-					$licz = $polaczenie->query("SELECT * FROM min ");
+					$licz = $polaczenie->query("SELECT id FROM min ORDER BY id DESC  ");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
 					$_SESSION['i'] = $i;
+
 
 					while($i>0)
 					{
@@ -161,7 +167,8 @@ require_once "connect.php";
 				}
 				else if(isset($_POST['holenderska']))
 				{
-					$licz = $polaczenie->query("SELECT * FROM holenderska ");
+					
+					$licz = $polaczenie->query("SELECT id FROM holenderska ORDER BY id DESC  ");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
@@ -170,11 +177,13 @@ require_once "connect.php";
 					while($i>0)
 					{
 						
+						
 						$_SESSION['holenderska'] = TRUE;
 						$h = $polaczenie->query("SELECT id FROM holenderska  ORDER BY id DESC LIMIT 1 ");
 						$k = $h->fetch_assoc();
 						$id = $k['id'];
 						$id = $id-$limit;
+						
 						$pozycja = $polaczenie->query("SELECT * FROM holenderska WHERE id = '$id' ");
 						$wiersz = $pozycja->fetch_assoc();
 						$_SESSION['nr'] = $wiersz['id'];
@@ -183,18 +192,22 @@ require_once "connect.php";
 						$_SESSION['data_r'] = $wiersz['data_r'];
 						$_SESSION['data_z'] = $wiersz['data_z'];
 						$_SESSION['cena_w'] = $wiersz['cena_w'];
+						$_SESSION['cena_a'] = $wiersz['cena_a'];
 						$_SESSION['spadek'] = $wiersz['spadek'];
 						$_SESSION['czas_s'] = $wiersz['czas_s'];
 						$_SESSION['obraz'] = $wiersz['obraz'];
 						$limit++;
 						$i--;
 						
+						require('aktualizacja_holenderska.php');
+
 						
 									echo 	'<p>'.'Nazwa : '.$_SESSION['nazwa'].'<br/>';
 									echo 	'Opis: '.$_SESSION['opis'].'<br/>';
 									echo 	'Data rozpoczęcia aukcji: '.$_SESSION['data_r'].'<br/>';
 									echo 	'Data zakończenia aukcji: '.$_SESSION['data_z'].'<br/>';
-									echo 	'Cena: '.$_SESSION['cena_w'].'<br/>';
+									echo 	'Cena wywoławcza: '.$_SESSION['cena_w'].'<br/>';
+									echo 	'<span style="color:green">Cena aktualna: '.$_SESSION['cena_a'].'<br/></span>';
 									echo 	'Cena spada o: '.$_SESSION['spadek'].'<br/>';
 									echo 	'Cena spada co: '.$_SESSION['czas_s'].'<br/>';
 									$obraz = $_SESSION['obraz'];
@@ -203,7 +216,11 @@ require_once "connect.php";
 									echo 'Numer tej aukcji: '.'<input name="nr" type="text" value="'.$_SESSION['nr'].'" readonly="readonly" size="1"/>'.'<br/>';
 									echo'<input type="submit" value="LICYTUJ"/>';
 									echo'</form>'.'</p>';
+									
 									echo '<hr/>';
+									
+									
+
 					}
 									
 				}
@@ -218,7 +235,7 @@ require_once "connect.php";
 			echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o skorzystanie z usługi w innym terminie!</span>';
 			echo '<br />Informacja developerska: '.$e;
 		}
-		
+
 		
 
 ?>

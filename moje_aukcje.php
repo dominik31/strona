@@ -1,59 +1,9 @@
-<div>
-<form name="logout" action="logout.php" method="post">
-<input type="submit" value="Wyloguj">
-</form>
-</div>
-
-<form action="nowa_aukcja.php" method="post">
-<input type="submit" value="DODAJ NOWĄ AUKCJĘ"/>
-</form>
-
-<form action="" method="post">
-<input type="radio" name="klasyczna" value="klasyczna"/>Aukcja klasyczna 
-<input type="radio" name="min" value="min"/>Aukcja z ceną minimalną
-<input type="radio" name="holenderska" value="holenderska"/>Aukcja holenderska
-<input type="radio" name="moje_aukcje" value="moje_aukcje"/>Moje aukcje
-	<input type="submit" value="szukaj"/>
-</form>
-
 <?php
-session_start();
-require_once "kontrola.php";
-if ((!isset($_SESSION['zalogowany'])))
-	{
-		header('Location: index.php');
-		exit();
-	}
 
-$nazwa = $_SESSION['user'];
-$email = $_SESSION['email'];
-$imie = $nazwa;
-echo $nazwa.'<br>'.$email.'<br><hr>';
-
-
-
-
-require_once "connect.php";
-		mysqli_report(MYSQLI_REPORT_STRICT);
-		
-		$wszystko_OK=true;
-		
-		try 
-		{
-			$polaczenie = new mysqli($host, $db_user, $db_password, $db_name);
-			if ($polaczenie->connect_errno!=0)
-			{
-				throw new Exception(mysqli_connect_errno());
-			}
-			else
-			{	
-			
-
-				
-				if(isset($_POST['klasyczna']))
+if(isset($_POST['klasyczna']))
 				{
 					
-					$licz = $polaczenie->query("SELECT * FROM klasyczna ");
+					$licz = $polaczenie->query("SELECT * FROM klasyczna WHERE user_w = '$imie' ");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
@@ -63,11 +13,11 @@ require_once "connect.php";
 					{
 						
 						$_SESSION['klasyczna'] = TRUE;
-						$h = $polaczenie->query("SELECT id FROM klasyczna  ORDER BY id DESC LIMIT 1 ");
+						$h = $polaczenie->query("SELECT id FROM klasyczna WHERE user_w = '$imie' ORDER BY id DESC LIMIT 1 ");
 						$k = $h->fetch_assoc();
 						$id = $k['id'];
 						$id = $id-$limit;
-						$pozycja = $polaczenie->query("SELECT * FROM klasyczna WHERE id = '$id' ");
+						$pozycja = $polaczenie->query("SELECT * FROM klasyczna WHERE id = '$id' AND user_w = '$imie' ");
 						$wiersz = $pozycja->fetch_assoc();
 						$_SESSION['nr'] = $wiersz['id'];
 						$_SESSION['nazwa'] = $wiersz['nazwa'];
@@ -95,9 +45,9 @@ require_once "connect.php";
 					}
 					
 				}
-				else if(isset($_POST['min']))
+				if(isset($_POST['min']))
 				{
-					$licz = $polaczenie->query("SELECT * FROM min ");
+					$licz = $polaczenie->query("SELECT * FROM min  WHERE user_w = '$imie'");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
@@ -107,11 +57,11 @@ require_once "connect.php";
 					{
 						
 						$_SESSION['min'] = TRUE;
-						$h = $polaczenie->query("SELECT id FROM min  ORDER BY id DESC LIMIT 1 ");
+						$h = $polaczenie->query("SELECT id FROM min WHERE user_w = '$imie' ORDER BY id DESC LIMIT 1 ");
 						$k = $h->fetch_assoc();
 						$id = $k['id'];
 						$id = $id-$limit;
-						$pozycja = $polaczenie->query("SELECT * FROM min WHERE id = '$id' ");
+						$pozycja = $polaczenie->query("SELECT * FROM min WHERE id = '$id' AND user_w = '$imie' ");
 						$wiersz = $pozycja->fetch_assoc();
 						$_SESSION['nr'] = $wiersz['id'];
 						$_SESSION['nazwa'] = $wiersz['nazwa'];
@@ -142,9 +92,9 @@ require_once "connect.php";
 					}
 					
 				}
-				else if(isset($_POST['holenderska']))
+				if(isset($_POST['holenderska']))
 				{
-					$licz = $polaczenie->query("SELECT * FROM holenderska ");
+					$licz = $polaczenie->query("SELECT * FROM holenderska WHERE user_w = '$imie' ");
 					$liczba_wierszy = $licz->num_rows;
 					$i = $liczba_wierszy;
 					$limit = 0;
@@ -154,11 +104,11 @@ require_once "connect.php";
 					{
 						
 						$_SESSION['holenderska'] = TRUE;
-						$h = $polaczenie->query("SELECT id FROM holenderska  ORDER BY id DESC LIMIT 1 ");
+						$h = $polaczenie->query("SELECT id FROM holenderska WHERE user_w = '$imie' ORDER BY id DESC LIMIT 1 ");
 						$k = $h->fetch_assoc();
 						$id = $k['id'];
 						$id = $id-$limit;
-						$pozycja = $polaczenie->query("SELECT * FROM holenderska WHERE id = '$id' ");
+						$pozycja = $polaczenie->query("SELECT * FROM holenderska WHERE id = '$id' AND user_w = '$imie' ");
 						$wiersz = $pozycja->fetch_assoc();
 						$_SESSION['nr'] = $wiersz['id'];
 						$_SESSION['nazwa'] = $wiersz['nazwa'];
@@ -166,7 +116,6 @@ require_once "connect.php";
 						$_SESSION['data_r'] = $wiersz['data_r'];
 						$_SESSION['data_z'] = $wiersz['data_z'];
 						$_SESSION['cena_w'] = $wiersz['cena_w'];
-						$_SESSION['cena_a'] = $wiersz['cena_a'];
 						$_SESSION['spadek'] = $wiersz['spadek'];
 						$_SESSION['czas_s'] = $wiersz['czas_s'];
 						$_SESSION['obraz'] = $wiersz['obraz'];
@@ -178,8 +127,7 @@ require_once "connect.php";
 									echo 	'Opis: '.$_SESSION['opis'].'<br/>';
 									echo 	'Data rozpoczęcia aukcji: '.$_SESSION['data_r'].'<br/>';
 									echo 	'Data zakończenia aukcji: '.$_SESSION['data_z'].'<br/>';
-									echo 	'Cena wywoławcza: '.$_SESSION['cena_w'].'<br/>';
-									echo 	'<span style="color:green">Cena aktualna: '.$_SESSION['cena_a'].'<br/></span>';
+									echo 	'Cena: '.$_SESSION['cena_w'].'<br/>';
 									echo 	'Cena spada o: '.$_SESSION['spadek'].'<br/>';
 									echo 	'Cena spada co: '.$_SESSION['czas_s'].'<br/>';
 									$obraz = $_SESSION['obraz'];
@@ -188,31 +136,9 @@ require_once "connect.php";
 									echo 'Numer tej aukcji: '.'<input name="nr" type="text" value="'.$_SESSION['nr'].'" readonly="readonly" size="1"/>'.'<br/>';
 									echo'<input type="submit" value="LICYTUJ"/>';
 									echo'</form>'.'</p>';
-									require_once('aktualizacja_holenderska.php');
 									echo '<hr/>';
 					}
 									
 				}
-				else if(isset($_POST['moje_aukcje']))
-				{
-					$_POST['klasyczna'] = TRUE;
-					$_POST['min'] = TRUE;
-					$_POST['holenderska'] = TRUE;
-					require_once "moje_aukcje.php";
-
-				}
-			}
-				
-				$polaczenie->close();
-			}
-			
-		
-		catch(Exception $e)
-		{
-			echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o skorzystanie z usługi w innym terminie!</span>';
-			echo '<br />Informacja developerska: '.$e;
-		}
-		
-		
 
 ?>
